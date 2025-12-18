@@ -1,0 +1,7 @@
+{
+  "name": "FASTgo Delivery Platform",
+  "description": "A comprehensive multi-role food delivery ecosystem featuring interfaces for customers, riders, restaurants, and administrators with AI-powered insights.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
