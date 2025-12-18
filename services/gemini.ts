@@ -1,7 +1,13 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-// The API key is defined in vite.config.ts using 'process.env.API_KEY'
+// Declare process for TypeScript as we are using it via Vite's define
+declare var process: {
+  env: {
+    API_KEY: string;
+  };
+};
+
 const getAIClient = () => {
   const apiKey = process.env.API_KEY;
   if (!apiKey) {
