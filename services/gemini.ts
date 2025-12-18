@@ -1,13 +1,13 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-// API Key is injected via Vite's define in vite.config.ts
+// The API key is defined in vite.config.ts using 'process.env.API_KEY'
 const getAIClient = () => {
   const apiKey = process.env.API_KEY;
   if (!apiKey) {
-    console.error("API_KEY is missing. Please set it in Vercel Environment Variables.");
+    throw new Error("Gemini API_KEY is not defined. Please check your Vercel Environment Variables.");
   }
-  return new GoogleGenAI({ apiKey: apiKey || "" });
+  return new GoogleGenAI({ apiKey });
 };
 
 export const getSmartRecommendations = async (userInput: string) => {
@@ -15,19 +15,12 @@ export const getSmartRecommendations = async (userInput: string) => {
     const ai = getAIClient();
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
-      contents: `The user says: "${userInput}". Based on this context, suggest 3 specific food items or cuisines. Keep it under 20 words.`,
-      config: { 
-        temperature: 0.7,
-        topP: 0.95,
-        topK: 40
-      }
+      contents: `The user says: "${userInput}". Suggest 3 food items. Max 15 words.`,
     });
-    
-    // .text is a property, not a method
-    return response.text || "Craving something good? Try our top-rated Burger Palace!";
+    return response.text || "Try our Burger Palace!";
   } catch (error) {
-    console.error("AI Recommendation Error:", error);
-    return "Try our special Chef's choice today!";
+    console.error("AI Error:", error);
+    return "Chef's special recommended!";
   }
 };
 
@@ -36,12 +29,11 @@ export const getOrderSummaryAI = async (items: string[]) => {
     const ai = getAIClient();
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
-      contents: `Summarize this food order for a receipt: ${items.join(", ")}. Mention why it's a great choice. Keep it friendly and concise.`,
+      contents: `Summarize order: ${items.join(", ")}. Short and sweet.`,
     });
-    return response.text || "Great choice! Your meal is being prepared.";
+    return response.text || "Your meal is on the way!";
   } catch (error) {
-    console.error("AI Summary Error:", error);
-    return "Your delicious meal is being prepared with care.";
+    return "Order confirmed!";
   }
 };
 
@@ -49,12 +41,11 @@ export const getAdminInsights = async (stats: any) => {
   try {
     const ai = getAIClient();
     const response = await ai.models.generateContent({
-      model: 'gemini-3-pro-preview', // Using Pro for complex analytics
-      contents: `Analyze these platform stats: ${JSON.stringify(stats)}. Give one high-level strategic recommendation for the delivery platform owner.`,
+      model: 'gemini-3-pro-preview',
+      contents: `Analyze stats: ${JSON.stringify(stats)}. Give one business tip.`,
     });
-    return response.text || "Consistently high order volume observed. Consider expanding rider pool.";
+    return response.text || "Operations normal.";
   } catch (error) {
-    console.error("AI Admin Insights Error:", error);
-    return "System performing optimally. Maintain current growth strategy.";
+    return "Maintain growth strategy.";
   }
 };
